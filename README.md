@@ -1,5 +1,5 @@
 # Simple Node Mirror Service
-A service that simply listens for POST messages, and mirrors the request back as the response.
+A service that simply listens for POST, GET, PUT, or DELETE HTTP messages, and mirrors either the request, or sample data, back as the response.
 
 ## Run
 ```sh
