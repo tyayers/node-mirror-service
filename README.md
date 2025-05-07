@@ -10,5 +10,5 @@ node index.js
 # deploy to GCP Cloud Run
 PROJECT_ID=YOUR_PROJECT_ID
 REGION=YOUR_REGION
-gcloud run deploy mirror-service --source . --project $PROJECT_ID --region $REGION --allow-unauthenticated
+gcloud run deploy mirror-service --source . --project $PROJECT_ID --region $REGION --set-env-vars GCLOUD_PROJECT="$PROJECT_ID",GCLOUD_REGION="$REGION" --allow-unauthenticated
 ```

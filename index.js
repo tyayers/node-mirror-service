@@ -1,5 +1,16 @@
 const express = require('express');
+const NodeCache = require('node-cache'); 
+const GoogleGenAI = require('@google/genai');
+
 const app = express();
+const myCache = new NodeCache();
+
+const ai = new GoogleGenAI.GoogleGenAI({
+  vertexai: true,
+  project: process.env.GCLOUD_PROJECT,
+  location: process.env.GCLOUD_REGION,
+});
+
 app.use(express.json());
 const port = 8080;
 
@@ -228,22 +239,32 @@ let sampleResponse = [
 
 app.post('/*', (req, res) => {
   console.log(req.body);
-  res.status(201).send(JSON.stringify(req.body, null, 2));
+  res.json(req.body);
 });
 
-app.get('/*', (req, res) => {
-  res.send(JSON.stringify(sampleResponse, null, 2));
+app.get('/*', async (req, res) => {
+  const geminiResponse = await ai.models.generateContent({
+    model: 'gemini-2.0-flash-001',
+    contents: "Generate a realistic raw JSON response to a GET request on the path " + req.path + ". Do not use markdown or new line characters in your response.",
+  });
+
+  res.json(JSON.parse(geminiResponse.text));
 });
 
 app.put('/*', (req, res) => {
   console.log(req.body);
-  res.send(JSON.stringify(req.body, null, 2));
+  res.json(req.body);
 });
 
-app.delete('/*', (req, res) => {
-  res.send(JSON.stringify(sampleResponse[0], null, 2));
+app.delete('/*', async (req, res) => {
+  const geminiResponse = await ai.models.generateContent({
+    model: 'gemini-2.0-flash-001',
+    contents: "Generate a realistic raw JSON response to a DELETE request on the path " + req.path + ". Do not use markdown or new line characters in your response.",
+  });
+
+  res.json(JSON.parse(geminiResponse.text));
 });
 
 app.listen(port, () => {
-  console.log(`Mirror app listening on port ${port}`)
+  console.log(`Mirror service listening on port ${port}`)
 });
