@@ -242,6 +242,10 @@ app.post("/*", (req, res) => {
   res.json(req.body);
 });
 
+app.get("/", (req, res) => {
+  res.send("Healthy!");
+});
+
 app.get("/products", (req, res) => {
   res.json(sampleResponse);
 });
